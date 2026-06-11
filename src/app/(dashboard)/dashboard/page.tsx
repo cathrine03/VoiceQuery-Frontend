@@ -18,6 +18,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+)
 
 export default function DashboardPage() {
   const [data, setData] =
@@ -39,7 +40,12 @@ export default function DashboardPage() {
   }
 
   return (
+  
    <div className="text-black dark:text-white space-y-8 ">
+
+    <div className="bg-red-500 text-white p-10 text-5xl">
+    TAILWIND TEST
+  </div>
 
   {/* HEADER */}
   <div>

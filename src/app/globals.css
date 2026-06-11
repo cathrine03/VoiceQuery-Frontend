@@ -121,8 +121,9 @@
     @apply border-border outline-ring/50;
   }
   body {
-  background: white;
-  color: black;
-  font-family: Arial, sans-serif;
-}
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
 }
