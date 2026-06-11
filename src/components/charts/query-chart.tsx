@@ -10,6 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  Legend,
 } from "recharts";
 
 interface Props {
@@ -23,95 +24,137 @@ export default function QueryChart({
 
   const columns = Object.keys(data[0]);
 
-  // Find first numeric column
-  const yKey =
-    columns.find(
-      (key) => typeof data[0][key] === "number"
-    ) || columns[columns.length - 1];
+  // ---------- 2 COLUMN CHART ----------
+  if (columns.length === 2) {
+    const xKey = columns[0];
+    const yKey = columns[1];
 
-  if (!yKey) return null;
+    const isDate =
+      xKey.toLowerCase().includes("date") ||
+      xKey.toLowerCase().includes("month") ||
+      xKey.toLowerCase().includes("year");
 
-  // Find first non-numeric column
-  const xKey =
-    columns.find((key) => key !== yKey) ||
-    columns[0];
+    return (
+      <div className="border rounded-xl p-6 bg-white dark:bg-gray-900 dark:border-gray-700">
+        <h2 className="text-lg font-semibold mb-4">
+          📊 Visualization
+        </h2>
 
-  // Detect time-based chart
-  const isDate =
-    xKey.toLowerCase().includes("date") ||
-    xKey.toLowerCase().includes("month") ||
-    xKey.toLowerCase().includes("year");
+        <div className="h-96">
+          <ResponsiveContainer width="100%" height="100%">
+            {isDate ? (
+              <LineChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey={xKey} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
 
-  // Handle multi-column datasets
-  const chartData = data.map((row) => {
-    const labelColumns = columns.filter(
-      (col) => col !== yKey
+                <Line
+                  type="monotone"
+                  dataKey={yKey}
+                  stroke="#6366F1"
+                  strokeWidth={3}
+                  dot={{ r: 5 }}
+                />
+              </LineChart>
+            ) : (
+              <BarChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey={xKey} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+
+                <Bar
+                  dataKey={yKey}
+                  fill="#6366F1"
+                  radius={[8, 8, 0, 0]}
+                />
+              </BarChart>
+            )}
+          </ResponsiveContainer>
+        </div>
+      </div>
     );
+  }
 
-    return {
-      label:
-        labelColumns.length > 1
-          ? labelColumns
-              .map((col) => row[col])
-              .join(" - ")
-          : row[xKey],
+  // ---------- 3 COLUMN CHART ----------
+  if (columns.length === 3) {
+    const categoryKey = columns[0];
+    const seriesKey = columns[1];
+    const valueKey = columns[2];
 
-      value: Number(row[yKey]),
-    };
-  });
+    const groupedData: any = {};
 
-  return (
-    <div className="bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6">
-      <h2 className="text-lg font-semibold mb-4">
-        Visualization
-      </h2>
+    data.forEach((row) => {
+      const category = row[categoryKey];
 
-      <div className="h-[400px]">
-        <ResponsiveContainer
-          width="100%"
-          height="100%"
-        >
-          {isDate ? (
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
+      if (!groupedData[category]) {
+        groupedData[category] = {
+          [categoryKey]: category,
+        };
+      }
 
-              <XAxis
-                dataKey="label"
-                angle={-30}
-                textAnchor="end"
-                height={70}
-              />
+      groupedData[category][row[seriesKey]] =
+        row[valueKey];
+    });
 
-              <YAxis />
+    const chartData = Object.values(groupedData);
 
-              <Tooltip />
+    const uniqueSeries = [
+      ...new Set(data.map((d) => d[seriesKey])),
+    ];
 
-              <Line
-                type="monotone"
-                dataKey="value"
-              />
-            </LineChart>
-          ) : (
+    const colors = [
+      "#6366F1", // Indigo
+      "#06B6D4", // Cyan
+      "#10B981", // Emerald
+      "#F59E0B", // Amber
+      "#EF4444", // Red
+      "#8B5CF6", // Violet
+      "#EC4899", // Pink
+      "#14B8A6", // Teal
+    ];
+
+    return (
+      <div className="border rounded-xl p-6 bg-white dark:bg-gray-900 dark:border-gray-700">
+        <h2 className="text-lg font-semibold mb-4">
+          📊 Visualization
+        </h2>
+
+        <div className="h-[500px]">
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
-
-              <XAxis
-                dataKey="label"
-                angle={-30}
-                textAnchor="end"
-                height={80}
-                interval={0}
-              />
-
+              <XAxis dataKey={categoryKey} />
               <YAxis />
-
               <Tooltip />
+              <Legend />
 
-              <Bar dataKey="value" />
+              {uniqueSeries.map((series, index) => (
+                <Bar
+                  key={String(series)}
+                  dataKey={String(series)}
+                  fill={
+                    colors[index % colors.length]
+                  }
+                  radius={[6, 6, 0, 0]}
+                />
+              ))}
             </BarChart>
-          )}
-        </ResponsiveContainer>
+          </ResponsiveContainer>
+        </div>
       </div>
+    );
+  }
+
+  return (
+    <div className="border rounded-xl p-6 bg-white dark:bg-gray-900 dark:border-gray-700">
+      <p className="text-gray-500">
+        Chart visualization supports 2-3 column query
+        results.
+      </p>
     </div>
   );
 }
