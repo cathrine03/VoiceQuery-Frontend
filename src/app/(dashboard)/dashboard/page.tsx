@@ -43,10 +43,6 @@ export default function DashboardPage() {
   
    <div className="text-black dark:text-white space-y-8 ">
 
-    <div className="bg-red-500 text-white p-10 text-5xl">
-    TAILWIND TEST
-  </div>
-
   {/* HEADER */}
   <div>
     <h1 className="text-3xl font-bold text-black dark:text-white">
