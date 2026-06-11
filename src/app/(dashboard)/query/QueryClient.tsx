@@ -234,7 +234,13 @@ export default function QueryClient() {
 
     {/* CHART */}
   {results.length > 0 && (
-    <QueryChart data={results} />
+    <QueryChart
+  data={[
+    { region: "North", revenue: 50000 },
+    { region: "South", revenue: 30000 },
+    { region: "East", revenue: 40000 },
+  ]}
+/>
   )}
 
   {/* RESULTS */}
