@@ -49,6 +49,9 @@ export default function LoginPage() {
       console.error("LOGIN ERROR:", error);
       showToast("Login failed");
     }
+  };
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -105,5 +108,4 @@ export default function LoginPage() {
       </div>
     </div>
   );
-}
 }
