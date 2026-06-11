@@ -42,9 +42,6 @@ export default function QueryClient() {
     try {
       const data = await generateQuery(query);
 
-      console.log("RAW RESPONSE:", data);
-      console.log("RESULTS:", data.results);
-
       if (!query || query.trim() === "") return;
 
       setSql(data?.sql ?? "");
@@ -237,13 +234,7 @@ export default function QueryClient() {
 
     {/* CHART */}
   {results.length > 0 && (
-    <QueryChart
-  data={[
-    { region: "North", revenue: 50000 },
-    { region: "South", revenue: 30000 },
-    { region: "East", revenue: 40000 },
-  ]}
-/>
+    <QueryChart data={results} />
   )}
 
   {/* RESULTS */}
