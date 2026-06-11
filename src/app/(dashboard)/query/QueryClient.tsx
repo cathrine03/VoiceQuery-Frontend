@@ -42,6 +42,9 @@ export default function QueryClient() {
     try {
       const data = await generateQuery(query);
 
+      console.log("RAW RESPONSE:", data);
+      console.log("RESULTS:", data.results);
+
       if (!query || query.trim() === "") return;
 
       setSql(data?.sql ?? "");
