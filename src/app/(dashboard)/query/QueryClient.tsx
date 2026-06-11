@@ -9,6 +9,7 @@ import { exportToCSV } from "@/utils/exportCsv";
 import { explainSql } from "@/services/explain";
 import { saveQuery } from "@/services/savedQueries";
 import { showToast } from "@/lib/toast";
+import QueryChart from "@/components/charts/query-chart";
 
 export default function QueryClient() {
   const [question, setQuestion] = useState("");
@@ -230,6 +231,8 @@ export default function QueryClient() {
       )}
     </>
   )}
+
+  <QueryChart data={results} />
 
   {/* RESULTS */}
   {results.length > 0 && (
