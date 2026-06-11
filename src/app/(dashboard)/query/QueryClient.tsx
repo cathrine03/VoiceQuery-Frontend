@@ -232,7 +232,10 @@ export default function QueryClient() {
     </>
   )}
 
-  <QueryChart data={results} />
+    {/* CHART */}
+  {results.length > 0 && (
+    <QueryChart data={results} />
+  )}
 
   {/* RESULTS */}
   {results.length > 0 && (
