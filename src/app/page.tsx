@@ -86,23 +86,6 @@ export default function HomePage() {
           and explains results in plain English.
         </p>
 
-        <div className="flex justify-center gap-4 mt-10">
-
-          <Link
-            href="/register"
-            className="px-6 py-3 rounded-lg bg-black text-white dark:bg-white dark:text-black font-medium"
-          >
-            Get Started
-          </Link>
-
-          <Link
-            href="/login"
-            className="px-6 py-3 rounded-lg border dark:border-gray-700"
-          >
-            View Demo
-          </Link>
-
-        </div>
 
         {/* TECH STACK */}
         <div className="flex flex-wrap justify-center gap-3 mt-10">
@@ -269,7 +252,7 @@ export default function HomePage() {
               href="/register"
               className="px-6 py-3 rounded-lg bg-black text-white dark:bg-white dark:text-black"
             >
-              Start Querying
+              Get Started
             </Link>
 
             <Link
