@@ -193,37 +193,42 @@ export default function QueryClient() {
       </p>
     )}
 
-    {/* METRICS */}
-    {(totalTime !== null || rowCount !== null) && (
-      <div className="flex flex-wrap gap-4 mt-4">
+    {/* METRICS + SAVE BUTTON */}
+    {(totalTime !== null || rowCount !== null || sql) && (
+      <div className="flex flex-wrap items-center justify-between gap-4 mt-4">
 
-        <div className="p-3 border rounded-lg dark:border-gray-700">
-          AI: {aiTime} ms
+        {/* LEFT SIDE: METRICS */}
+        <div className="flex flex-wrap gap-4">
+
+          <div className="p-3 border rounded-lg dark:border-gray-700">
+            AI: {aiTime} ms
+          </div>
+
+          <div className="p-3 border rounded-lg dark:border-gray-700">
+            DB: {dbTime} ms
+          </div>
+
+          <div className="p-3 border rounded-lg dark:border-gray-700">
+            Total: {totalTime} ms
+          </div>
+
+          <div className="p-3 border rounded-lg dark:border-gray-700">
+            Rows: {rowCount}
+          </div>
+
         </div>
 
-        <div className="p-3 border rounded-lg dark:border-gray-700">
-          DB: {dbTime} ms
-        </div>
-
-        <div className="p-3 border rounded-lg dark:border-gray-700">
-          Total: {totalTime} ms
-        </div>
-
-        <div className="p-3 border rounded-lg dark:border-gray-700">
-          Rows: {rowCount}
-        </div>
+        {/* RIGHT SIDE: SAVE BUTTON */}
+        {sql && (
+          <button
+            onClick={handleSave}
+            className="px-3 py-2 border rounded dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            ⭐ Save Query
+          </button>
+        )}
 
       </div>
-    )}
-
-    {/* SAVE BUTTON */}
-    {sql && (
-      <button
-        onClick={handleSave}
-        className="mt-4 px-3 py-2 border rounded dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
-      >
-        ⭐ Save Query
-      </button>
     )}
 
   </div>
@@ -258,6 +263,7 @@ export default function QueryClient() {
     </>
   )}
 
+
  {insights && (
   <div className="bg-white dark:bg-gray-900 border rounded-xl p-6 mt-4">
     <h2 className="font-semibold mb-2">
@@ -272,6 +278,7 @@ export default function QueryClient() {
       ))}
     </ul>
   </div>
+  
 )}
 
     {/* CHART */}
