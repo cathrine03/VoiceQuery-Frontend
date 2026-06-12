@@ -39,13 +39,12 @@ export default function QueryClient() {
   }, [searchParams]);
 
   const runQuery = async (query: string) => {
+    if (!query?.trim()) return;
     setLoading(true);
 
     try {
       const data = await generateQuery(query);
 
-      if (!query?.trim()) return;
-        setLoading(true);
 
       setSql(data?.sql ?? "");
       setResults(Array.isArray(data?.results) ? data.results : []);
@@ -67,7 +66,7 @@ export default function QueryClient() {
         );
 
         const insightData = await res.json();
-        setInsights(insightData.insights || "");
+        setInsights(insightData.insights?.join("\n") || "");
       } catch (err) {
         console.error("INSIGHTS ERROR:", err);
       }
@@ -231,16 +230,6 @@ export default function QueryClient() {
           </div>
 
         </div>
-
-        {/* RIGHT SIDE: SAVE BUTTON */}
-        {sql && (
-          <button
-            onClick={handleSave}
-            className="px-3 py-2 border rounded dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
-          >
-            ⭐ Save Query
-          </button>
-        )}
 
       </div>
     )}
