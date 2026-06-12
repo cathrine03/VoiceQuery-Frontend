@@ -258,7 +258,8 @@ export default function QueryClient() {
     </>
   )}
 
-    {insights && (
+  <button>
+   {insights && (
       <div className="bg-white dark:bg-gray-900 border rounded-xl p-6 mt-4">
         <h2 className="font-semibold mb-2">
           AI Insights
@@ -271,6 +272,7 @@ export default function QueryClient() {
         </ul>
       </div>
     )}
+    </button>
 
     {/* CHART */}
   {results.length > 0 && (
@@ -288,7 +290,7 @@ export default function QueryClient() {
         Results
       </h2>
 
-      {/* EXPORT */}
+          {/* EXPORT */}
       <div className="flex gap-3 mb-4">
         <button
           onClick={handleExportCSV}
@@ -310,15 +312,13 @@ export default function QueryClient() {
         >
           📊 Export Enterprise PDF
         </button>
+      </div> {/* ✅ THIS WAS MISSING */}
 
       {/* TABLE */}
       <div className="overflow-x-auto">
-
         <table className="w-full">
-
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr className="border-b dark:border-gray-700">
-
               {columns.map((key) => (
                 <th
                   key={key}
@@ -327,18 +327,15 @@ export default function QueryClient() {
                   {key}
                 </th>
               ))}
-
             </tr>
           </thead>
 
           <tbody className="bg-white dark:bg-gray-900">
-
             {results.map((row, index) => (
               <tr
                 key={index}
                 className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
               >
-
                 {columns.map((col) => (
                   <td
                     key={col}
@@ -347,19 +344,14 @@ export default function QueryClient() {
                     {String(row[col])}
                   </td>
                 ))}
-
               </tr>
             ))}
-
           </tbody>
-
         </table>
-
-        </div>
+      </div>
 
       </div>
 
-    </div>
   )}
 
 </div>
