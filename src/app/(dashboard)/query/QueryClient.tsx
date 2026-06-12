@@ -267,27 +267,27 @@ export default function QueryClient() {
   )}
 
 
- {insights?.trim() && (
-  <div className="bg-white dark:bg-gray-900 border rounded-xl p-6 mt-4">
-    <h2 className="font-semibold mb-2">
-      AI Insights
-    </h2>
-
-    <ul className="list-disc pl-5 space-y-1 text-gray-700 dark:text-gray-300">
-      {insights
-        .split(/\n|•|-/)
-        .map((line, i) => line.trim())
-        .filter(Boolean)
-        .map((line, i) => (
-          <li key={i}>{line}</li>
-        ))}
-    </ul>
-  </div>
-)}
-
     {/* CHART */}
   {results.length > 0 && (
     <QueryChart data={results} />
+  )}
+
+  {insights?.trim() && (
+    <div className="bg-white dark:bg-gray-900 border rounded-xl p-6 mt-4">
+      <h2 className="font-semibold mb-2">
+        AI Insights
+      </h2>
+
+      <ul className="list-disc pl-5 space-y-2">
+        {insights
+          .split("\n")
+          .map(line => line.replace(/\*\*/g, "").replace(/\* /, "").trim())
+          .filter(Boolean)
+          .map((line, i) => (
+            <li key={i}>{line}</li>
+          ))}
+      </ul>
+    </div>
   )}
 
   {/* RESULTS */}
