@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { generateQuery } from "@/services/query";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { exportToCSV } from "@/utils/exportCsv";
+import { exportEnterprisePDF } from "@/utils/exportPdf";
 import { explainSql } from "@/services/explain";
 import { saveQuery } from "@/services/savedQueries";
 import { showToast } from "@/lib/toast";
@@ -23,6 +24,7 @@ export default function QueryClient() {
   const [rowCount, setRowCount] = useState<number | null>(null);
 
   const [explanation, setExplanation] = useState("");
+  const [insights, setInsights] = useState("");
 
   const searchParams = useSearchParams();
   const { isListening, startListening } = useSpeechRecognition();
@@ -47,6 +49,28 @@ export default function QueryClient() {
       setSql(data?.sql ?? "");
       setResults(Array.isArray(data?.results) ? data.results : []);
 
+      try {
+        const res = await fetch(
+          "https://voicequery-ai.onrender.com/insights/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              question: query,
+              sql: data.sql,
+              results: data.results,
+            }),
+          }
+        );
+
+        const insightData = await res.json();
+        setInsights(insightData.insights || "");
+      } catch (err) {
+        console.error("INSIGHTS ERROR:", err);
+      }
+
       setAiTime(data?.timings?.ai_ms ?? null);
       setDbTime(data?.timings?.db_ms ?? null);
       setTotalTime(data?.timings?.total_ms ?? null);
@@ -61,6 +85,8 @@ export default function QueryClient() {
       setLoading(false);
     }
   };
+
+  
 
   const handleGenerate = async () => {
     if (!question.trim()) return;
@@ -232,6 +258,20 @@ export default function QueryClient() {
     </>
   )}
 
+    {insights && (
+      <div className="bg-white dark:bg-gray-900 border rounded-xl p-6 mt-4">
+        <h2 className="font-semibold mb-2">
+          AI Insights
+        </h2>
+
+        <ul className="list-disc pl-5 space-y-1 text-gray-700 dark:text-gray-300">
+          {insights.split("\n").map((line, i) => (
+            <li key={i}>{line.replace("-", "").trim()}</li>
+          ))}
+        </ul>
+      </div>
+    )}
+
     {/* CHART */}
   {results.length > 0 && (
     <QueryChart data={results} />
@@ -239,19 +279,37 @@ export default function QueryClient() {
 
   {/* RESULTS */}
   {results.length > 0 && (
-    <div className="bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6">
+    <div
+      id="results-section"
+      className="bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6"
+    >
 
       <h2 className="font-semibold mb-2">
         Results
       </h2>
 
       {/* EXPORT */}
-      <button
-        onClick={handleExportCSV}
-        className="mb-4 px-4 py-2 border rounded dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
-      >
-        📄 Export CSV
-      </button>
+      <div className="flex gap-3 mb-4">
+        <button
+          onClick={handleExportCSV}
+          className="px-4 py-2 border rounded dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+        >
+          📄 Export CSV
+        </button>
+
+        <button
+          onClick={() =>
+            exportEnterprisePDF({
+              question,
+              sql,
+              results,
+              insights,
+            })
+          }
+          className="px-4 py-2 border rounded dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+        >
+          📊 Export Enterprise PDF
+        </button>
 
       {/* TABLE */}
       <div className="overflow-x-auto">
@@ -296,6 +354,8 @@ export default function QueryClient() {
           </tbody>
 
         </table>
+
+        </div>
 
       </div>
 
