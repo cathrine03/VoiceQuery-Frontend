@@ -66,7 +66,8 @@ export default function QueryClient() {
         );
 
         const insightData = await res.json();
-        setInsights(insightData.insights?.join("\n") || "");
+        console.log("INSIGHT RESPONSE:", insightData);
+        setInsights(insightData.result || "");
       } catch (err) {
         console.error("INSIGHTS ERROR:", err);
       }
