@@ -44,7 +44,8 @@ export default function QueryClient() {
     try {
       const data = await generateQuery(query);
 
-      if (!query || query.trim() === "") return;
+      if (!query?.trim()) return;
+        setLoading(true);
 
       setSql(data?.sql ?? "");
       setResults(Array.isArray(data?.results) ? data.results : []);
@@ -112,7 +113,9 @@ export default function QueryClient() {
     exportToCSV(results, `sales_report_${today}.csv`);
   };
 
-  const columns = results.length > 0 ? Object.keys(results[0]) : [];
+  const columns = results?.[0]
+    ? Object.keys(results[0])
+    : [];
 
   return (
     <div className="space-y-6  text-black dark:text-white">
@@ -179,9 +182,20 @@ export default function QueryClient() {
   {/* SQL OUTPUT */}
   <div className="bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6">
 
-    <h2 className="font-semibold mb-2">
-      Generated SQL
-    </h2>
+    <div className="flex items-center justify-between mb-2">
+      <h2 className="font-semibold">
+        Generated SQL
+      </h2>
+
+      {sql && (
+        <button
+          onClick={handleSave}
+          className="px-3 py-2 border rounded dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+        >
+          ⭐ Save Query
+        </button>
+      )}
+    </div>
 
     {sql ? (
       <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto whitespace-pre-wrap break-words text-gray-800 dark:text-gray-200">
@@ -264,21 +278,22 @@ export default function QueryClient() {
   )}
 
 
- {insights && (
+ {insights?.trim() && (
   <div className="bg-white dark:bg-gray-900 border rounded-xl p-6 mt-4">
     <h2 className="font-semibold mb-2">
       AI Insights
     </h2>
 
     <ul className="list-disc pl-5 space-y-1 text-gray-700 dark:text-gray-300">
-      {insights.split("\n").map((line, i) => (
-        <li key={i}>
-          {line.replace("-", "").trim()}
-        </li>
-      ))}
+      {insights
+        .split(/\n|•|-/)
+        .map((line, i) => line.trim())
+        .filter(Boolean)
+        .map((line, i) => (
+          <li key={i}>{line}</li>
+        ))}
     </ul>
   </div>
-  
 )}
 
     {/* CHART */}
